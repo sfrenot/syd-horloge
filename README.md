@@ -1,6 +1,6 @@
 # Temps et causalité : horloges de Lamport, vectorielles et matricielles
 
-Dans un système réparti, il n'y a **ni mémoire commune ni horloge commune**. Pourtant, beaucoup de problèmes exigent de savoir « qui s'est passé avant qui » :
+Dans un système réparti, il n'y a **ni mémoire commune ni horloge commune**. Pourtant, beaucoup de problèmes exigent de savoir « qui est passé avant qui » :
 
 - une banque qui applique un dépôt puis un retrait sur deux répliques ;
 - un chat de groupe où une réponse ne doit pas s'afficher avant sa question ;
