@@ -1,0 +1,4 @@
+# Exercices 1 et 3 : Lamport puis vecteurs
+P1: a b>m1 c d<m3 e
+P2: f g h<m1 i>m2
+P3: j<m2 k>m3 l

@@ -1,0 +1,4 @@
+# Exercice 5 : horloges matricielles et messages stables
+P1: a>m1 b<m2 c>m3
+P2: d<m1 e>m2 f<m4
+P3: g>m4 h<m3

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="662" height="280" viewBox="0 0 662 280" font-family="Helvetica, Arial, sans-serif">
+<style>text { paint-order: stroke; stroke: white; stroke-width: 4px; stroke-linejoin: round; }</style>
+<defs><marker id="fleche" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f5fa8"/></marker></defs>
+<rect width="662" height="280" fill="white"/>
+<text x="16" y="55" font-size="16" font-weight="bold">P1</text>
+<line x1="70" y1="50" x2="642" y2="50" stroke="#333" stroke-width="1.5" marker-end="url(#fleche)"/>
+<text x="16" y="145" font-size="16" font-weight="bold">P2</text>
+<line x1="70" y1="140" x2="642" y2="140" stroke="#333" stroke-width="1.5" marker-end="url(#fleche)"/>
+<text x="16" y="235" font-size="16" font-weight="bold">P3</text>
+<line x1="70" y1="230" x2="642" y2="230" stroke="#333" stroke-width="1.5" marker-end="url(#fleche)"/>
+<line x1="113.5" y1="54.9" x2="169.4" y2="133.5" stroke="#1f5fa8" stroke-width="1.3" marker-end="url(#fleche)"/>
+<text x="148.0" y="95.0" font-size="12" fill="#1f5fa8" font-style="italic">m1</text>
+<line x1="305.5" y1="135.1" x2="361.4" y2="56.5" stroke="#1f5fa8" stroke-width="1.3" marker-end="url(#fleche)"/>
+<text x="340.0" y="95.0" font-size="12" fill="#1f5fa8" font-style="italic">m2</text>
+<line x1="243.4" y1="227.5" x2="422.8" y2="143.4" stroke="#1f5fa8" stroke-width="1.3" marker-end="url(#fleche)"/>
+<text x="340.0" y="185.0" font-size="12" fill="#1f5fa8" font-style="italic">m4</text>
+<line x1="496.0" y1="55.7" x2="555.3" y2="222.5" stroke="#1f5fa8" stroke-width="1.3" marker-end="url(#fleche)"/>
+<text x="532.0" y="140.0" font-size="12" fill="#1f5fa8" font-style="italic">m3</text>
+<circle cx="110" cy="50" r="4.5" fill="#111"/>
+<text x="110" y="40" font-size="14" text-anchor="middle">a</text>
+<circle cx="174" cy="140" r="4.5" fill="#111"/>
+<text x="174" y="130" font-size="14" text-anchor="middle">d</text>
+<circle cx="238" cy="230" r="4.5" fill="#111"/>
+<text x="238" y="220" font-size="14" text-anchor="middle">g</text>
+<circle cx="302" cy="140" r="4.5" fill="#111"/>
+<text x="302" y="130" font-size="14" text-anchor="middle">e</text>
+<circle cx="366" cy="50" r="4.5" fill="#111"/>
+<text x="366" y="40" font-size="14" text-anchor="middle">b</text>
+<circle cx="430" cy="140" r="4.5" fill="#111"/>
+<text x="430" y="130" font-size="14" text-anchor="middle">f</text>
+<circle cx="494" cy="50" r="4.5" fill="#111"/>
+<text x="494" y="40" font-size="14" text-anchor="middle">c</text>
+<circle cx="558" cy="230" r="4.5" fill="#111"/>
+<text x="558" y="220" font-size="14" text-anchor="middle">h</text>
+</svg>

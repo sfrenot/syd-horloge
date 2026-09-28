@@ -1,0 +1,4 @@
+# Exercice 2 : horloges physiques de vitesses différentes (pas de Lamport)
+P1[pas=6]: a>m1 b c d<m3 e>m4
+P2[pas=8]: f g<m1 h>m2 i j<m4
+P3[pas=10]: k l m<m2 n>m3
