@@ -16,7 +16,7 @@ class Physique:
 
     def __init__(self, pid, n, decalage=None, derive=None):
         self.pid = pid
-        self.decalage = random.uniform(-30, 30) if decalage is None else decalage
+        self.decalage = random.uniform(0, 60) if decalage is None else decalage
         self.derive = random.uniform(-0.05, 0.05) if derive is None else derive
         self.origine = time.monotonic()
 

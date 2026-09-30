@@ -85,7 +85,7 @@ python3 scenario.py exercices/intro.txt --svg intro.svg
 python3 reseau.py physique
 ```
 
-Chaque processus estampille ses événements avec sa propre horloge, qui a un décalage de ±30 ms et une dérive de ±5 %. Les messages mettent entre 0 et 50 ms à arriver. Le journal est ensuite trié par estampille, et le symbole ⚠ signale une réception placée **avant** l'envoi du même message.
+Chaque processus estampille ses événements avec sa propre horloge, qui a une avance de 0 à 60 ms sur l'heure de référence et une dérive de ±5 %. Les messages mettent entre 0 et 50 ms à arriver. Le journal est ensuite trié par estampille, et le symbole ⚠ signale une réception placée **avant** l'envoi du même message.
 
 **Questions**
 
