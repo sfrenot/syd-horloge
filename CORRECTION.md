@@ -4,6 +4,16 @@
 
 ## Introduction
 
+- **« Connaître l'ordre » au sens de quoi ?** Au sens de l'**ordre d'exécution local** : le processus sait quel événement a suivi quel autre, parce qu'il les a exécutés lui-même, l'un après l'autre. Il n'a besoin d'aucune heure pour cela : il suffit de numéroter ses événements 1, 2, 3… Cet ordre est **total** sur les événements du processus, mais ne dit rien de leur date réelle ni de leur position par rapport aux événements des autres. C'est exactement le compteur que l'horloge de Lamport étend ensuite aux messages. Nuance à signaler : l'hypothèse suppose un processus séquentiel. Dans `reseau.py`, chaque processus a deux threads (émission et réception), d'où le verrou qui garantit que les événements restent totalement ordonnés.
+- **Pourquoi a-t-on eu besoin de connaître l'heure ?** Réponse ouverte ; on attend quelques jalons et surtout la distinction entre **dater** et **ordonner / coordonner** :
+  - **Agriculture et calendriers** (Égypte, crue du Nil) : prévoir les saisons, un temps cyclique lu dans le ciel.
+  - **Vie religieuse et communautaire** (heures canoniales, cloches, horloges mécaniques des XIIIe–XIVe siècles) : se **coordonner** à plusieurs sur un même signal.
+  - **Navigation** (XVIIIe siècle) : la longitude se déduit de l'écart entre l'heure locale et l'heure du port de départ. D'où le *Longitude Act* (1714) et le chronomètre de Harrison : une horloge qui **dérive** peu en mer.
+  - **Chemins de fer et télégraphe** (XIXe siècle) : chaque ville avait son heure solaire ; il faut une heure commune pour les horaires et pour éviter que deux trains s'engagent sur la même voie unique. D'où l'heure des chemins de fer, puis les fuseaux horaires (conférence de Washington, 1884). C'est un problème d'**ordre et d'exclusion mutuelle** autant que de date.
+  - **Aujourd'hui** : GPS (la position se calcule à partir de la synchronisation d'horloges atomiques), horodatage des ordres en finance, bases de données réparties.
+
+  Morale pour le TD : dans la plupart de ces cas, l'heure sert surtout à **ordonner et coordonner** des acteurs éloignés, ce que les horloges logiques font sans heure physique.
+
 - **I1.** Oui pour les deux. a (envoi de m1) précède e sur P2 ; e précède g, envoi de m3 ; m3 est reçu en i. L'information part donc de a et atteint P3 par la chaîne a → e → g → i. De même, d → e → g → i. Attention : « pouvoir savoir » signifie que l'information a pu circuler, pas que le message m3 la contient forcément.
 - **I2.** Non. Aucune chaîne de messages ne relie h à b, dans un sens comme dans l'autre : P3 n'envoie rien à P1. Les deux événements sont concurrents (notion formalisée en partie 1), et la position sur le dessin ne signifie rien.
 - **I3.** Par exemple `P2: a>m1 b>m2` et `P3: c<m2 d<m1` : les flèches m1 et m2 se croisent. C'est possible car les canaux ne sont pas FIFO (UDP, routes différentes, retransmissions).
