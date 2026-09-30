@@ -18,7 +18,11 @@ python3 scenario.py exercices/exo1.txt --svg exercices/exo1.svg                 
 python3 scenario.py exercices/exo1.txt --svg exercices/correction/exo1-lamport.svg --avec lamport   # diagramme annoté
 ```
 
-Les SVG de `exercices/` et `exercices/correction/` sont générés par `scenario.py` : après modification d'un `exoN.txt`, les régénérer plutôt que les éditer à la main (le fichier `exo1.txt` sert aux exercices 1 et 3, d'où `exo3-vecteur.svg`).
+Les SVG de `exercices/` et `exercices/correction/` sont générés par `scenario.py` : après modification d'un `exoN.txt`, les régénérer plutôt que les éditer à la main (le fichier `exo1.txt` sert aux exercices 1 et 3, d'où `exo3-vecteur.svg`). Chaque SVG a un PNG jumeau (pour diapos et documents), à régénérer ensuite ; `README.md` continue de référencer les SVG :
+
+```bash
+for f in exercices/*.svg exercices/correction/*.svg; do rsvg-convert -z 2 -b white "$f" -o "${f%.svg}.png"; done
+```
 
 ## Architecture
 

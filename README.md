@@ -29,9 +29,9 @@ Prérequis : Python ≥ 3.10, aucune bibliothèque externe.
 
 Un système réparti est un ensemble de **processus** P1, P2…, Pn : des programmes qui s'exécutent sur des machines différentes (ou, dans ce TD, dans des threads différents d'une même machine). Chaque processus :
 
-- est **séquentiel** : il fait une chose après l'autre, dans un ordre qu'il connaît parfaitement ;
+- est **séquentiel** : il fait une chose après l'autre, dans un ordre qu'il connaît parfaitement (question : au sens de quoi ? Que signifie « connaître l'ordre » sans horloge ?) ;
 - a sa **propre mémoire**, que les autres ne peuvent pas lire ;
-- a sa **propre horloge**, qui n'a aucune raison d'indiquer la même heure que celle des voisins.
+- a sa **propre horloge**, qui n'a aucune raison d'indiquer la même heure que celle des voisins. Historiquement, pourquoi a-t-on eu besoin de connaître l'heure ? Autrement dit, à quel moment de l'histoire de l'humanité le temps est-il devenu important ?
 
 Le seul moyen pour un processus d'apprendre quelque chose sur un autre est de recevoir un **message** de sa part. Un message met un temps inconnu et variable à arriver : on sait seulement qu'il finit par arriver. Deux messages envoyés dans un certain ordre peuvent même arriver dans l'ordre inverse.
 
@@ -41,9 +41,9 @@ La vie d'un processus est une suite d'**événements**, de trois types :
 |---|---|---|
 | **Interne** | écrire dans un fichier, faire un calcul | le processus change son état, sans communiquer |
 | **Envoi** | `sendto(m1, P2)` | un message part vers un autre processus |
-| **Réception** | `recvfrom()` renvoie m1 | un message arrive ; son contenu devient connu du processus |
+| **Réception** | `recvfrom()` reçoit m1 | un message arrive ; son contenu devient connu du processus |
 
-À chaque message correspondent exactement deux événements : son envoi, sur l'émetteur, et sa réception, sur le destinataire.
+À chaque message correspondent exactement deux événements : son envoi par l'émetteur, et sa réception par le destinataire.
 
 ### Le diagramme espace-temps
 
