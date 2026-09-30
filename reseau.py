@@ -51,7 +51,7 @@ class Processus(threading.Thread):
 
     def run(self):
         self.recepteur.start()
-        for i in range(self.k):
+        for i in range(1, self.k + 1):
             time.sleep(self.alea.uniform(0, 0.02))
             if self.alea.random() < 0.3:
                 with self.verrou:
