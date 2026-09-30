@@ -2,6 +2,12 @@
 
 > Réservé à l'enseignant. Les valeurs numériques ont été vérifiées avec `scenario.py`. Les diagrammes annotés sont dans `exercices/correction/`.
 
+## Introduction
+
+- **I1.** Oui pour les deux. a (envoi de m1) précède e sur P2 ; e précède g, envoi de m3 ; m3 est reçu en i. L'information part donc de a et atteint P3 par la chaîne a → e → g → i. De même, d → e → g → i. Attention : « pouvoir savoir » signifie que l'information a pu circuler, pas que le message m3 la contient forcément.
+- **I2.** Non. Aucune chaîne de messages ne relie h à b, dans un sens comme dans l'autre : P3 n'envoie rien à P1. Les deux événements sont concurrents (notion formalisée en partie 1), et la position sur le dessin ne signifie rien.
+- **I3.** Par exemple `P2: a>m1 b>m2` et `P3: c<m2 d<m1` : les flèches m1 et m2 se croisent. C'est possible car les canaux ne sont pas FIFO (UDP, routes différentes, retransmissions).
+
 ## Partie 0
 
 1. Ce n'est pas un bug. Chaque horloge a son propre décalage et sa propre dérive. Si l'horloge de l'émetteur est en avance sur celle du récepteur d'un écart supérieur à la latence du message, la réception porte une date antérieure à l'envoi.

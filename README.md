@@ -23,6 +23,62 @@ Prérequis : Python ≥ 3.10, aucune bibliothèque externe.
 
 ---
 
+## Introduction : processus, messages et événements
+
+### Le modèle
+
+Un système réparti est un ensemble de **processus** P1, P2…, Pn : des programmes qui s'exécutent sur des machines différentes (ou, dans ce TD, dans des threads différents d'une même machine). Chaque processus :
+
+- est **séquentiel** : il fait une chose après l'autre, dans un ordre qu'il connaît parfaitement ;
+- a sa **propre mémoire**, que les autres ne peuvent pas lire ;
+- a sa **propre horloge**, qui n'a aucune raison d'indiquer la même heure que celle des voisins.
+
+Le seul moyen pour un processus d'apprendre quelque chose sur un autre est de recevoir un **message** de sa part. Un message met un temps inconnu et variable à arriver : on sait seulement qu'il finit par arriver. Deux messages envoyés dans un certain ordre peuvent même arriver dans l'ordre inverse.
+
+La vie d'un processus est une suite d'**événements**, de trois types :
+
+| Type | Exemple | Ce qui se passe |
+|---|---|---|
+| **Interne** | écrire dans un fichier, faire un calcul | le processus change son état, sans communiquer |
+| **Envoi** | `sendto(m1, P2)` | un message part vers un autre processus |
+| **Réception** | `recvfrom()` renvoie m1 | un message arrive ; son contenu devient connu du processus |
+
+À chaque message correspondent exactement deux événements : son envoi, sur l'émetteur, et sa réception, sur le destinataire.
+
+### Le diagramme espace-temps
+
+On représente une exécution par un **diagramme espace-temps** :
+
+![Diagramme d'introduction](exercices/intro.svg)
+
+- chaque processus est une ligne horizontale, et son temps local s'écoule de gauche à droite ;
+- chaque point est un événement ;
+- chaque flèche est un message, qui va de l'événement d'envoi à l'événement de réception. Elle est inclinée, parce que le transport prend du temps.
+
+Dans cet exemple, P1 envoie m1 à P2 (événement a), fait un calcul interne (b), puis reçoit m2 (c). P2 a un événement interne (d), reçoit m1 (e), puis envoie m2 à P1 (f) et m3 à P3 (g). P3 a un événement interne (h), puis reçoit m3 (i).
+
+**Attention** : seule la position d'un événement **sur sa propre ligne** a un sens. Comparer des positions horizontales entre deux lignes n'a pas de sens : h est dessiné à gauche de b, mais rien ne dit que h a eu lieu avant b. Personne, dans le système, ne peut d'ailleurs le savoir, puisqu'aucun message ne relie ces deux événements.
+
+**Dans le code** : dans `reseau.py`, un processus est un thread muni d'une socket UDP, et un message est un datagramme. Dans `scenario.py`, un processus est une ligne de texte qui liste ses événements dans l'ordre local. Le diagramme ci-dessus est produit à partir de `exercices/intro.txt` :
+
+```
+P1: a>m1 b c<m2        a>m1 : envoi de m1 ;  c<m2 : réception de m2
+P2: d e<m1 f>m2 g>m3   b, d, h : événements internes
+P3: h i<m3
+```
+
+```bash
+python3 scenario.py exercices/intro.txt --svg intro.svg
+```
+
+**Questions**
+
+- **I1.** Dans le diagramme, P3 peut-il savoir que l'événement a a eu lieu ? Et l'événement d ? Justifiez en suivant les flèches.
+- **I2.** P1 peut-il savoir si h a eu lieu avant ou après b ?
+- **I3.** Dessinez à la main une exécution possible de trois processus où P2 envoie deux messages à P3, et où P3 les reçoit dans l'ordre inverse de leur envoi.
+
+---
+
 ## Partie 0 : pourquoi pas l'heure des machines ?
 
 ```bash
@@ -41,7 +97,7 @@ Chaque processus estampille ses événements avec sa propre horloge, qui a un d�
 
 ## Partie 1 : la causalité
 
-Un système est un ensemble de processus P1…Pn. Chacun produit une suite d'**événements** : des événements internes, des envois et des réceptions de messages. On définit la relation **« s'est produit avant »**, notée `→` :
+On reprend le modèle de l'introduction : des processus P1…Pn, dont les événements sont internes, des envois ou des réceptions. On définit la relation **« s'est produit avant »**, notée `→` :
 
 - si a et b ont lieu sur le même processus et que a précède b, alors `a → b` ;
 - si a est l'envoi d'un message et b sa réception, alors `a → b` ;
