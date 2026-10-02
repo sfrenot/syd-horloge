@@ -6,13 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TD « Temps et causalité » du cours SYD (INSA Lyon) : horloges physique, de Lamport, vectorielle et matricielle. Tout le contenu (code, identifiants, commentaires, sujet) est en **français** ; garder ce style. Python ≥ 3.10, bibliothèque standard uniquement (pas de dépendances, pas de suite de tests, pas de build).
 
-- `README.md` est le **sujet distribué aux étudiants** (questions I1–I3 de l'introduction, questions numérotées 1–28, exercices, questions d'examen E1–E14).
+- `README.md` est le **sujet distribué aux étudiants** (questions I1–I3 de l'introduction, questions numérotées 1–27, exercices, questions d'examen E1–E13).
 - `CORRECTION.md` est **réservé à l'enseignant** ; ses valeurs numériques sont vérifiées avec `scenario.py`. Ne pas en recopier de réponses dans `README.md`. Si une question du sujet est renumérotée ou modifiée, mettre à jour la correction en parallèle.
 
 ## Commandes
 
 ```bash
-python3 reseau.py physique|lamport|vectorielle|matricielle [-n 3] [-k 6] [--graine 1]
+python3 reseau.py physique|lamport|vectorielle|matricielle [-n 3] [-k 6] [--graine 1] [--paires]
 python3 scenario.py exercices/exo1.txt [--matrices] [--concurrents]
 python3 scenario.py exercices/exo1.txt --svg exercices/exo1.svg                               # diagramme vierge (sujet)
 python3 scenario.py exercices/exo1.txt --svg exercices/correction/exo1-lamport.svg --avec lamport   # diagramme annoté

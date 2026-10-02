@@ -82,10 +82,10 @@ python3 scenario.py exercices/intro.txt --svg intro.svg
 ## Partie 0 : pourquoi pas l'heure des machines ?
 
 ```bash
-python3 reseau.py physique -k 2
+python3 reseau.py physique -k 2 --paires
 ```
 
-Chaque processus estampille ses événements avec sa propre horloge, qui a une avance de 0 à 60 ms sur l'heure de référence et une dérive de ±5 %. Chacun des 3 processus fait 2 actions (option `-k`), soit une dizaine d'événements. Les messages mettent entre 0 et 50 ms à arriver. Le journal est ensuite trié par estampille, et le symbole ⚠ signale une réception placée **avant** l'envoi du même message.
+Chaque processus estampille ses événements avec sa propre horloge, qui a une avance de 0 à 60 ms sur l'heure de référence et une dérive de ±5 %. Chacun des 3 processus fait 2 actions (option `-k`), soit une dizaine d'événements, nommés `P<i>.<rang>` (rang dans l'ordre local du processus). L'option `--paires` liste les paires causales et concurrentes réelles, et marque d'un ✗ celles sur lesquelles l'horloge se trompe. Les messages mettent entre 0 et 50 ms à arriver. Le journal est ensuite trié par estampille, et le symbole ⚠ signale une réception placée **avant** l'envoi du même message.
 
 **Questions**
 
@@ -132,6 +132,7 @@ Lisez la classe `Lamport` dans `horloges.py` (ou écrivez-la avant de la lire), 
 
 ```bash
 python3 reseau.py lamport
+python3 reseau.py lamport -k 2 --paires   # journal court, avec la liste des paires
 ```
 
 **Questions sur le mécanisme**
@@ -144,7 +145,7 @@ python3 reseau.py lamport
 
 À partir du diagramme de la partie 1 (`exercices/exo1.txt`) :
 
-1. Calculez l'estampille de Lamport de chaque événement.
+1. Déterminez l'estampille de Lamport de chaque événement.
 2. On a `L(c) < L(i)`. Peut-on en conclure `c → i` ? Trouvez toutes les paires d'événements pour lesquelles l'horloge « suggère » un ordre qui n'existe pas.
 3. c et h ont la même estampille, tout comme d et l. Que peut-on dire de deux événements de même estampille ? Démontrez-le.
 4. Pour obtenir un **ordre total**, on compare les couples `(L(e), numéro du processus)`. Écrivez la suite totalement ordonnée des événements. Cet ordre respecte-t-il la causalité ? Reflète-t-il l'ordre physique des événements concurrents ?
@@ -153,7 +154,7 @@ Vous pouvez vérifier vos calculs avec `python3 scenario.py exercices/exo1.txt`.
 
 ### Exercice 2 : horloges qui avancent à des vitesses différentes
 
-Dans la version d'origine de l'article de Lamport, les horloges sont des compteurs physiques qui avancent de 6, 8 et 10 unités à chaque événement (`exercices/exo2.txt`).
+Dans la version d'origine de l'article de Lamport, les horloges sont des compteurs physiques qui avancent de 6, 8 et 10 unités à chaque événement de P1, P2, P3 (`exercices/exo2.txt`).
 
 ![Diagramme de l'exercice 2](exercices/exo2.svg)
 
@@ -166,7 +167,6 @@ Dans la version d'origine de l'article de Lamport, les horloges sont des compteu
 12. Un processus qui reçoit un message estampillé 12 alors que son horloge vaut 5 peut-il savoir combien d'événements ont eu lieu ailleurs ? Peut-il détecter qu'un message lui manque ?
 13. A envoie m1 à B, puis **téléphone** à l'utilisateur de B pour lui demander d'envoyer m2 à C. Les horloges de Lamport rendent-elles compte du lien entre m1 et m2 ? Qu'est-ce que cela dit de la causalité « observable » par un système ?
 14. L'ordre total `(L, pid)` favorise systématiquement P1 en cas d'égalité. Dans quel algorithme cela peut-il poser un problème d'équité ?
-15. **Utilisation** : l'algorithme d'exclusion mutuelle de Lamport place les requêtes dans une file ordonnée par `(L, pid)`. Pourquoi faut-il un ordre **total** ? Combien de messages faut-il par entrée en section critique pour N processus ? Quelle hypothèse sur les canaux est nécessaire ?
 
 ---
 
@@ -185,15 +185,16 @@ On compare deux vecteurs ainsi :
 
 ```bash
 python3 reseau.py vectorielle
+python3 reseau.py vectorielle -k 2 --paires   # journal court, avec la liste des paires
 ```
 
 **Questions**
 
-16. Que représente `Vi[k]` pour k ≠ i ? Et `Vi[i]` ?
-17. Comparez la ligne « fausse causalité » avec celle de la partie 2. Pourquoi vaut-elle maintenant 0 ?
-18. Démontrez que `a → b ⇒ V(a) < V(b)`. Pour la réciproque, montrez que si `V(a) ≤ V(b)`, alors l'événement a fait partie du « passé » de b.
-19. Un collègue propose la définition `V < W ⇔ V[k] < W[k] pour tout k`. Donnez un contre-exemple qui montre qu'elle est fausse.
-20. Pour tester `a → b`, a-t-on besoin des vecteurs complets ? Montrez qu'il suffit de comparer une seule composante si l'on sait sur quel processus a eu lieu a.
+15. Que représente `Vi[k]` pour k ≠ i ? Et `Vi[i]` ?
+16. Comparez la ligne « fausse causalité » avec celle de la partie 2. Pourquoi vaut-elle maintenant 0 ?
+17. Démontrez que `a → b ⇒ V(a) < V(b)`. Pour la réciproque, montrez que si `V(a) ≤ V(b)`, alors l'événement a fait partie du « passé » de b.
+18. Un collègue propose la définition `V < W ⇔ V[k] < W[k] pour tout k`. Donnez un contre-exemple qui montre qu'elle est fausse.
+19. Pour tester `a → b`, a-t-on besoin des vecteurs complets ? Montrez qu'il suffit de comparer une seule composante si l'on sait sur quel processus a eu lieu a.
 
 ### Exercice 3 : vecteurs sur le même diagramme
 
@@ -216,9 +217,9 @@ On utilise des vecteurs qui ne comptent que les **diffusions** : `V[j]` est le n
 
 ### Les limites des horloges vectorielles
 
-21. Quelle est la taille d'une estampille ? Pour un système de 10 000 nœuds, qu'est-ce que cela implique pour chaque message ? (Charron-Bost a montré en 1991 qu'on ne peut pas faire plus petit dans le cas général.)
-22. Que devient le mécanisme si des processus rejoignent ou quittent le système en cours de route ?
-23. **Utilisation** : Dynamo et Riak attachent un *vecteur de versions* à chaque objet répliqué. Deux répliques d'un panier portent les versions `[S1:2, S2:1]` et `[S1:1, S2:2]`. Que doit faire le système ? Et avec `[S1:2, S2:1]` et `[S1:3, S2:1]` ?
+20. Quelle est la taille d'une estampille ? Pour un système de 10 000 nœuds, qu'est-ce que cela implique pour chaque message ? (Charron-Bost a montré en 1991 qu'on ne peut pas faire plus petit dans le cas général.)
+21. Que devient le mécanisme si des processus rejoignent ou quittent le système en cours de route ?
+22. **Utilisation** : Dynamo et Riak attachent un *vecteur de versions* à chaque objet répliqué. Deux répliques d'un panier portent les versions `[S1:2, S2:1]` et `[S1:1, S2:2]`. Que doit faire le système ? Et avec `[S1:2, S2:1]` et `[S1:3, S2:1]` ?
 
 ---
 
@@ -238,13 +239,14 @@ Un vecteur indique ce que **je** sais des autres. Une matrice indique en plus ce
 
 ```bash
 python3 reseau.py matricielle
+python3 reseau.py matricielle -k 2 --paires   # journal court, avec la liste des paires
 ```
 
 **Questions**
 
-24. Interprétez `min_k Mi[k][l]`, affiché comme « événements connus de tous ».
-25. Chaque processus tient un **journal répliqué** : chaque message transporte les entrées du journal que l'émetteur connaît (algorithme de Wuu et Bernstein). Connaître un événement revient donc à en détenir l'entrée. Quand Pi peut-il purger l'entrée du t-ième événement de Pl sans que personne n'en ait encore besoin ?
-26. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
+23. Interprétez `min_k Mi[k][l]`, affiché comme « événements connus de tous ».
+24. Chaque processus tient un **journal répliqué** : chaque message transporte les entrées du journal que l'émetteur connaît (algorithme de Wuu et Bernstein). Connaître un événement revient donc à en détenir l'entrée. Quand Pi peut-il purger l'entrée du t-ième événement de Pl sans que personne n'en ait encore besoin ?
+25. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
 
 ### Exercice 5 : messages stables
 
@@ -253,7 +255,7 @@ python3 reseau.py matricielle
 1. Calculez la matrice de P3 après l'événement h.
 2. D'après cette matrice, quels événements P3 sait-il connus de tous les processus ?
 3. P3 sait-il que P2 a reçu m4 ? Pourtant, P2 l'a bien reçu. Expliquez cet écart.
-4. Dans le modèle du journal répliqué (question 25), P3 peut-il purger l'entrée g (envoi de m4) ? Et les entrées a et e ?
+4. Dans le modèle du journal répliqué (question 24), P3 peut-il purger l'entrée g (envoi de m4) ? Et les entrées a et e ?
 
 Vérification : `python3 scenario.py exercices/exo5.txt --matrices`.
 
@@ -261,7 +263,7 @@ Vérification : `python3 scenario.py exercices/exo5.txt --matrices`.
 
 ## Partie 5 : synthèse
 
-27. Remplissez le tableau suivant :
+26. Remplissez le tableau suivant :
 
 | | Physique | Lamport | Vectorielle | Matricielle |
 |---|---|---|---|---|
@@ -272,7 +274,7 @@ Vérification : `python3 scenario.py exercices/exo5.txt --matrices`.
 | Lien avec l'heure réelle | | | | |
 | Exemple d'utilisation | | | | |
 
-28. **Ouverture** : les *Hybrid Logical Clocks* (CockroachDB, MongoDB) combinent une horloge physique et un compteur de Lamport. Quel problème de la partie 2 cherchent-elles à résoudre ? Google Spanner, lui, utilise TrueTime : une heure physique avec un intervalle d'incertitude borné. Pourquoi Spanner attend-il la fin de cet intervalle avant de valider une transaction ?
+27. **Ouverture** : les *Hybrid Logical Clocks* (CockroachDB, MongoDB) combinent une horloge physique et un compteur de Lamport. Quel problème de la partie 2 cherchent-elles à résoudre ? Google Spanner, lui, utilise TrueTime : une heure physique avec un intervalle d'incertitude borné. Pourquoi Spanner attend-il la fin de cet intervalle avant de valider une transaction ?
 
 ---
 
@@ -303,9 +305,8 @@ Des questions courtes, classées par type, pour les contrôles. Leurs réponses 
 
 - **E10.** A envoie m1 à B, puis prévient B par téléphone qu'il doit envoyer m2 à C. On ne sait pas si B envoie m2 avant ou après avoir reçu m1. Toutes les horloges partent de 0. Quelles valeurs peut prendre l'horloge de C à la réception de m2, et dans quelles circonstances ?
 - **E11.** Trouvez l'erreur dans cette correction : « `Va < Vb ⇔ Va[i] < Vb[i]` pour tout i ».
-- **E12.** Pourquoi l'algorithme d'exclusion mutuelle de Lamport nécessite-t-il des canaux FIFO et un ordre total ?
 
 ### Conception
 
-- **E13.** Dans une messagerie de groupe, des réponses s'affichent parfois avant leur question. Proposez un mécanisme, avec ses estampilles et sa règle de délivrance, et discutez-en le coût.
-- **E14.** Deux répliques d'un même objet portent les vecteurs de versions `[S1:2, S2:1]` et `[S1:1, S2:2]`. Que doit faire le système ? Pourquoi une estampille de Lamport ne suffirait-elle pas ici ?
+- **E12.** Dans une messagerie de groupe, des réponses s'affichent parfois avant leur question. Proposez un mécanisme, avec ses estampilles et sa règle de délivrance, et discutez-en le coût.
+- **E13.** Deux répliques d'un même objet portent les vecteurs de versions `[S1:2, S2:1]` et `[S1:1, S2:2]`. Que doit faire le système ? Pourquoi une estampille de Lamport ne suffirait-elle pas ici ?

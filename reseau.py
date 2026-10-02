@@ -1,6 +1,6 @@
 """Processus qui échangent des messages UDP, chacun équipé d'une horloge.
 
-Usage : python3 reseau.py physique|lamport|vectorielle|matricielle [-n 3] [-k 6] [--graine 1]
+Usage : python3 reseau.py physique|lamport|vectorielle|matricielle [-n 3] [-k 6] [--graine 1] [--paires]
 
 Un observateur omniscient (qui n'existe pas dans un vrai système réparti !) note
 l'ordre réel de tous les événements, puis compare ce que les horloges affirment
@@ -119,16 +119,37 @@ def affirme_avant(nom, a, b):
     return horloges.relation(va, vb) == "->"
 
 
-def analyser(nom, evenements, processus):
+def nommer(evenements):
+    """Nomme chaque événement P<i>.<rang> : son rang dans l'ordre local de P<i>."""
+    rangs = {}
+    for e in evenements:
+        rangs[e["pid"]] = rangs.get(e["pid"], 0) + 1
+        e["nom"] = f"P{e['pid'] + 1}.{rangs[e['pid']]}"
+        e["rang"] = rangs[e["pid"]]
+
+
+def lister(paires, symbole, faux):
+    """Affiche les paires, 5 par ligne ; ✗ marque celles où l'horloge se trompe."""
+    cle = lambda e: (e["pid"], e["rang"])
+    paires = sorted(paires, key=lambda p: (cle(p[0]), cle(p[1])))
+    textes = [f"{a['nom']} {symbole} {b['nom']}{' ✗' if faux(a, b) else '  '}"
+              for a, b in paires]
+    for i in range(0, len(textes), 5):
+        print("    " + "   ".join(f"{t:17}" for t in textes[i:i + 5]).rstrip())
+
+
+def analyser(nom, evenements, processus, paires=False):
+    nommer(evenements)
     descendants = causalite_reelle(evenements)
     n = len(evenements)
-    causales = [(a, b) for a in range(n) for b in descendants[a]]
-    concurrentes = [(a, b) for a in range(n) for b in range(a + 1, n)
+    causales = [(evenements[a], evenements[b]) for a in range(n) for b in sorted(descendants[a])]
+    concurrentes = [tuple(sorted((evenements[a], evenements[b]), key=lambda e: e["pid"]))
+                    for a in range(n) for b in range(a + 1, n)
                     if b not in descendants[a] and a not in descendants[b]]
-    coherentes = sum(affirme_avant(nom, evenements[a], evenements[b]) for a, b in causales)
-    fausses = sum(affirme_avant(nom, evenements[a], evenements[b])
-                  or affirme_avant(nom, evenements[b], evenements[a])
-                  for a, b in concurrentes)
+    rate = lambda a, b: not affirme_avant(nom, a, b)
+    ordonne = lambda a, b: affirme_avant(nom, a, b) or affirme_avant(nom, b, a)
+    coherentes = sum(not rate(a, b) for a, b in causales)
+    fausses = sum(ordonne(a, b) for a, b in concurrentes)
 
     print(f"\nJournal trié selon l'horloge « {nom} » (⚠ = réception placée avant son envoi)")
     vus = set()
@@ -136,7 +157,7 @@ def analyser(nom, evenements, processus):
         alerte = "⚠" if e["type"].startswith("récep") and e["msg"] not in vus else " "
         if e["type"].startswith("envoi"):
             vus.add(e["msg"])
-        print(f" {alerte} P{e['pid'] + 1}  {e['type']:9} {e['msg'] or '':6} {e['estampille']}")
+        print(f" {alerte} {e['nom']:5} {e['type']:9} {e['msg'] or '':6} {e['estampille']}")
 
     print(f"\n{n} événements.")
     print(f"Paires causales réelles (a → b)        : {len(causales):5}")
@@ -144,6 +165,12 @@ def analyser(nom, evenements, processus):
           f"   ({100 * coherentes / max(1, len(causales)):.0f} %, doit valoir 100 %)")
     print(f"Paires concurrentes réelles (a ‖ b)    : {len(concurrentes):5}")
     print(f"  dont l'horloge affirme un ordre       : {fausses:5}   (fausse causalité)")
+
+    if paires:
+        print("\nPaires causales réelles (✗ = l'horloge n'affirme pas a avant b) :")
+        lister(causales, "→", rate)
+        print("Paires concurrentes réelles (✗ = l'horloge leur attribue un ordre) :")
+        lister(concurrentes, "‖", ordonne)
 
     if nom == "matricielle":
         for p in processus:
@@ -158,6 +185,8 @@ def main():
     parser.add_argument("-n", type=int, default=3, help="nombre de processus")
     parser.add_argument("-k", type=int, default=6, help="actions par processus")
     parser.add_argument("--graine", type=int, default=None)
+    parser.add_argument("--paires", action="store_true",
+                        help="lister les paires causales et concurrentes réelles")
     args = parser.parse_args()
 
     random.seed(args.graine)
@@ -173,7 +202,7 @@ def main():
     for p in processus:
         p.arreter()
 
-    analyser(args.horloge, journal.evenements, processus)
+    analyser(args.horloge, journal.evenements, processus, args.paires)
 
 
 if __name__ == "__main__":
