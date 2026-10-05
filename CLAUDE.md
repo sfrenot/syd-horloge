@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TD « Temps et causalité » du cours SYD (INSA Lyon) : horloges physique, de Lamport, vectorielle et matricielle. Tout le contenu (code, identifiants, commentaires, sujet) est en **français** ; garder ce style. Python ≥ 3.10, bibliothèque standard uniquement (pas de dépendances, pas de suite de tests, pas de build).
 
-- `README.md` est le **sujet distribué aux étudiants** (questions I1–I3 de l'introduction, questions numérotées 1–27, exercices, questions d'examen E1–E13).
+- `README.md` est le **sujet distribué aux étudiants** (questions I1–I3 de l'introduction, questions numérotées 1–24, exercices, questions d'examen E1–E13).
 - `CORRECTION.md` est **réservé à l'enseignant** ; ses valeurs numériques sont vérifiées avec `scenario.py`. Ne pas en recopier de réponses dans `README.md`. Si une question du sujet est renumérotée ou modifiée, mettre à jour la correction en parallèle.
 
 ## Commandes

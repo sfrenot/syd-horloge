@@ -75,9 +75,6 @@
 
 15. Pour k ≠ i, `Vi[k]` est le nombre d'événements de Pk qui sont dans le passé causal de l'événement courant. `Vi[i]` est le nombre d'événements de Pi lui-même.
 16. Deux événements concurrents ont chacun « vu » un événement que l'autre n'a pas vu, donc leurs vecteurs sont incomparables. L'horloge ne leur attribue jamais d'ordre.
-17. **Sens direct** : chaque arc fait croître le vecteur composante par composante, avec au moins une composante strictement plus grande, et la relation se compose par transitivité. **Réciproque** : a a lieu sur Pi, et `V(a)[i] ≤ V(b)[i]` signifie que b connaît au moins les `V(a)[i]` premiers événements de Pi, dont a. Cette connaissance n'a pu arriver que par une chaîne de messages partant de Pi après a, ou bien b est sur Pi après a. Dans les deux cas, `a → b`.
-18. (1,0) et (1,1) : P1 envoie à P2, qui reçoit. On a bien `(1,0) → (1,1)`, mais la première composante n'est pas strictement plus grande. La bonne définition est « ≤ partout et ≠ ». *(Cette erreur figure dans l'ancienne correction de 2004, `td-horloge/old/TD-2004-Horloges`.)*
-19. Si a a lieu sur Pi et a ≠ b : `a → b ⇔ V(a)[i] ≤ V(b)[i]`.
 
 ### Exercice 3 (voir `correction/exo3-vecteur.svg`)
 
@@ -102,15 +99,15 @@
 
 ### Limites
 
-20. Une estampille compte N entiers. Pour 10 000 nœuds sur 32 bits, cela fait environ 40 Ko **par message**. Charron-Bost (1991) a montré qu'une estampille qui caractérise exactement la causalité nécessite N composantes dans le cas général.
-21. Il faut attribuer un indice à chaque nouvel arrivant et purger ceux qui partent. En pratique, on utilise des tables {identifiant: compteur} (vecteurs de versions), des *dotted version vectors* ou des *interval tree clocks* (Almeida et al., 2008).
-22. `[S1:2, S2:1]` et `[S1:1, S2:2]` sont **concurrents** : c'est un conflit. Le système garde les deux versions (*siblings*), et l'application réconcilie, par exemple en faisant l'union des paniers dans Dynamo. En revanche, `[S1:3, S2:1]` domine `[S1:2, S2:1]` : la nouvelle version remplace l'ancienne.
+17. Une estampille compte N entiers. Pour 10 000 nœuds sur 32 bits, cela fait environ 40 Ko **par message**. Charron-Bost (1991) a montré qu'une estampille qui caractérise exactement la causalité nécessite N composantes dans le cas général.
+18. Il faut attribuer un indice à chaque nouvel arrivant et purger ceux qui partent. En pratique, on utilise des tables {identifiant: compteur} (vecteurs de versions), des *dotted version vectors* ou des *interval tree clocks* (Almeida et al., 2008).
+19. `[S1:2, S2:1]` et `[S1:1, S2:2]` sont **concurrents** : c'est un conflit. Le système garde les deux versions (*siblings*), et l'application réconcilie, par exemple en faisant l'union des paniers dans Dynamo. En revanche, `[S1:3, S2:1]` domine `[S1:2, S2:1]` : la nouvelle version remplace l'ancienne.
 
 ## Partie 4
 
-23. `min_k Mi[k][l]` est le nombre d'événements de Pl dont Pi **sait** que tous les processus les connaissent.
-24. Pi peut purger l'entrée dès que `min_k Mi[k][l] ≥ t`. Chaque processus possède alors déjà l'entrée, et Pi le sait. Cette connaissance est conservatrice : elle peut arriver bien après la connaissance effective.
-25. Une estampille compte N² entiers par message. C'est acceptable pour de petits groupes (réplication entre quelques sites) ou si l'on n'envoie que les lignes modifiées.
+20. `min_k Mi[k][l]` est le nombre d'événements de Pl dont Pi **sait** que tous les processus les connaissent.
+21. Pi peut purger l'entrée dès que `min_k Mi[k][l] ≥ t`. Chaque processus possède alors déjà l'entrée, et Pi le sait. Cette connaissance est conservatrice : elle peut arriver bien après la connaissance effective.
+22. Une estampille compte N² entiers par message. C'est acceptable pour de petits groupes (réplication entre quelques sites) ou si l'on n'envoie que les lignes modifiées.
 
 ### Exercice 5 (voir `correction/exo5-vecteur.svg` et `scenario.py exercices/exo5.txt --matrices`)
 
@@ -128,7 +125,7 @@
 
 ## Partie 5
 
-26. Synthèse :
+23. Synthèse :
 
 | | Physique | Lamport | Vectorielle | Matricielle |
 |---|---|---|---|---|
@@ -139,7 +136,7 @@
 | Lien avec l'heure réelle | oui | non | non | non |
 | Exemple d'utilisation | journaux, baux, TTL | exclusion mutuelle, ordre total, réplication | diffusion causale, vecteurs de versions, débogage | purge de journaux répliqués, stabilité |
 
-27. **HLC** : l'estampille reste proche de l'heure physique, donc lisible et utilisable pour « lire l'état à 14 h 03 », tout en gardant la garantie de Lamport. Cela corrige l'absence de lien avec le temps réel. **Spanner** : TrueTime renvoie un intervalle [plus tôt, plus tard]. En attendant que `plus tôt > estampille` avant de valider (*commit wait*), Spanner garantit que si T1 est validée avant que T2 ne commence, alors ts(T1) < ts(T2), même vu depuis un autre datacenter. C'est la cohérence externe.
+24. **HLC** : l'estampille reste proche de l'heure physique, donc lisible et utilisable pour « lire l'état à 14 h 03 », tout en gardant la garantie de Lamport. Cela corrige l'absence de lien avec le temps réel. **Spanner** : TrueTime renvoie un intervalle [plus tôt, plus tard]. En attendant que `plus tôt > estampille` avant de valider (*commit wait*), Spanner garantit que si T1 est validée avant que T2 ne commence, alors ts(T1) < ts(T2), même vu depuis un autre datacenter. C'est la cohérence externe.
 
 ---
 
@@ -151,7 +148,7 @@
   - **Problèmes :** Lamport ne donne pas la réciproque, ne détecte pas la concurrence et ne permet pas de repérer un message manquant.
   - **Solution :** les vecteurs caractérisent exactement la causalité.
   - **Prix :** N entiers par message, et un groupe de taille connue.
-- **E4.** Voir la question 23. Application : purge d'un journal répliqué, détection des messages stables.
+- **E4.** Voir la question 20. Application : purge d'un journal répliqué, détection des messages stables.
 - **E5.** Réponses :
   - (a) **V**.
   - (b) **F**, contre-exemple c ‖ i dans l'exercice 1.
@@ -180,6 +177,6 @@
   ```
 
 - **E10.** Si B envoie m2 **après** avoir reçu m1 : m1 = 1, B passe à 2, m2 = 3, donc **C = 4**. Si B envoie m2 **avant** : m2 = 1, donc **C = 2**. La relation voulue par les utilisateurs, passée par le téléphone, n'est garantie que dans le premier cas.
-- **E11.** L'inégalité stricte sur toutes les composantes est fausse. Contre-exemple de la question 18 : (1,0) et (1,1). Il faut « ≤ partout et ≠ ».
+- **E11.** L'inégalité stricte sur toutes les composantes est fausse. Contre-exemple : P1 envoie à P2, qui reçoit ; on a bien `(1,0) → (1,1)`, mais la première composante n'est pas strictement plus grande. Il faut « ≤ partout et ≠ ».
 - **E12.** Diffusion causale avec vecteurs de diffusions et règle de délivrance (exercice 4). Coût : N entiers par message et une file d'attente par récepteur. Avec une horloge de Lamport, il faudrait attendre des nouvelles de tous les processus.
-- **E13.** Les versions sont concurrentes : conflit à réconcilier (question 22). Une estampille de Lamport imposerait un ordre arbitraire et la dernière écriture écraserait l'autre (*last-writer-wins*) : une mise à jour serait **silencieusement perdue**.
+- **E13.** Les versions sont concurrentes : conflit à réconcilier (question 19). Une estampille de Lamport imposerait un ordre arbitraire et la dernière écriture écraserait l'autre (*last-writer-wins*) : une mise à jour serait **silencieusement perdue**.

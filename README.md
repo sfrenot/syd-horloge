@@ -192,9 +192,6 @@ python3 reseau.py vectorielle -k 2 --paires   # journal court, avec la liste des
 
 15. Que représente `Vi[k]` pour k ≠ i ? Et `Vi[i]` ?
 16. Comparez la ligne « fausse causalité » avec celle de la partie 2. Pourquoi vaut-elle maintenant 0 ?
-17. Démontrez que `a → b ⇒ V(a) < V(b)`. Pour la réciproque, montrez que si `V(a) ≤ V(b)`, alors l'événement a fait partie du « passé » de b.
-18. Un collègue propose la définition `V < W ⇔ V[k] < W[k] pour tout k`. Donnez un contre-exemple qui montre qu'elle est fausse.
-19. Pour tester `a → b`, a-t-on besoin des vecteurs complets ? Montrez qu'il suffit de comparer une seule composante si l'on sait sur quel processus a eu lieu a.
 
 ### Exercice 3 : vecteurs sur le même diagramme
 
@@ -217,9 +214,9 @@ On utilise des vecteurs qui ne comptent que les **diffusions** : `V[j]` est le n
 
 ### Les limites des horloges vectorielles
 
-20. Quelle est la taille d'une estampille ? Pour un système de 10 000 nœuds, qu'est-ce que cela implique pour chaque message ? (Charron-Bost a montré en 1991 qu'on ne peut pas faire plus petit dans le cas général.)
-21. Que devient le mécanisme si des processus rejoignent ou quittent le système en cours de route ?
-22. **Utilisation** : Dynamo et Riak attachent un *vecteur de versions* à chaque objet répliqué. Deux répliques d'un panier portent les versions `[S1:2, S2:1]` et `[S1:1, S2:2]`. Que doit faire le système ? Et avec `[S1:2, S2:1]` et `[S1:3, S2:1]` ?
+17. Quelle est la taille d'une estampille ? Pour un système de 10 000 nœuds, qu'est-ce que cela implique pour chaque message ? (Charron-Bost a montré en 1991 qu'on ne peut pas faire plus petit dans le cas général.)
+18. Que devient le mécanisme si des processus rejoignent ou quittent le système en cours de route ?
+19. **Utilisation** : Dynamo et Riak attachent un *vecteur de versions* à chaque objet répliqué. Deux répliques d'un panier portent les versions `[S1:2, S2:1]` et `[S1:1, S2:2]`. Que doit faire le système ? Et avec `[S1:2, S2:1]` et `[S1:3, S2:1]` ?
 
 ---
 
@@ -244,9 +241,9 @@ python3 reseau.py matricielle -k 2 --paires   # journal court, avec la liste des
 
 **Questions**
 
-23. Interprétez `min_k Mi[k][l]`, affiché comme « événements connus de tous ».
-24. Chaque processus tient un **journal répliqué** : chaque message transporte les entrées du journal que l'émetteur connaît (algorithme de Wuu et Bernstein). Connaître un événement revient donc à en détenir l'entrée. Quand Pi peut-il purger l'entrée du t-ième événement de Pl sans que personne n'en ait encore besoin ?
-25. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
+20. Interprétez `min_k Mi[k][l]`, affiché comme « événements connus de tous ».
+21. Chaque processus tient un **journal répliqué** : chaque message transporte les entrées du journal que l'émetteur connaît (algorithme de Wuu et Bernstein). Connaître un événement revient donc à en détenir l'entrée. Quand Pi peut-il purger l'entrée du t-ième événement de Pl sans que personne n'en ait encore besoin ?
+22. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
 
 ### Exercice 5 : messages stables
 
@@ -255,7 +252,7 @@ python3 reseau.py matricielle -k 2 --paires   # journal court, avec la liste des
 1. Calculez la matrice de P3 après l'événement h.
 2. D'après cette matrice, quels événements P3 sait-il connus de tous les processus ?
 3. P3 sait-il que P2 a reçu m4 ? Pourtant, P2 l'a bien reçu. Expliquez cet écart.
-4. Dans le modèle du journal répliqué (question 24), P3 peut-il purger l'entrée g (envoi de m4) ? Et les entrées a et e ?
+4. Dans le modèle du journal répliqué (question 21), P3 peut-il purger l'entrée g (envoi de m4) ? Et les entrées a et e ?
 
 Vérification : `python3 scenario.py exercices/exo5.txt --matrices`.
 
@@ -263,7 +260,7 @@ Vérification : `python3 scenario.py exercices/exo5.txt --matrices`.
 
 ## Partie 5 : synthèse
 
-26. Remplissez le tableau suivant :
+23. Remplissez le tableau suivant :
 
 | | Physique | Lamport | Vectorielle | Matricielle |
 |---|---|---|---|---|
@@ -274,7 +271,7 @@ Vérification : `python3 scenario.py exercices/exo5.txt --matrices`.
 | Lien avec l'heure réelle | | | | |
 | Exemple d'utilisation | | | | |
 
-27. **Ouverture** : les *Hybrid Logical Clocks* (CockroachDB, MongoDB) combinent une horloge physique et un compteur de Lamport. Quel problème de la partie 2 cherchent-elles à résoudre ? Google Spanner, lui, utilise TrueTime : une heure physique avec un intervalle d'incertitude borné. Pourquoi Spanner attend-il la fin de cet intervalle avant de valider une transaction ?
+24. **Ouverture** : les *Hybrid Logical Clocks* (CockroachDB, MongoDB) combinent une horloge physique et un compteur de Lamport. Quel problème de la partie 2 cherchent-elles à résoudre ? Google Spanner, lui, utilise TrueTime : une heure physique avec un intervalle d'incertitude borné. Pourquoi Spanner attend-il la fin de cet intervalle avant de valider une transaction ?
 
 ---
 
