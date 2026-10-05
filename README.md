@@ -10,7 +10,7 @@ Ce TD cherche à répondre à trois questions :
 
 1. Que veut-on vraiment ordonner, et pourquoi l'heure des machines ne suffit-elle pas ?
 2. Que garantit l'horloge de Lamport, et surtout, **que ne garantit-elle pas** ?
-3. Comment les horloges vectorielles, puis matricielles, lèvent-elles ces limites, et à quel prix ?
+3. Comment les horloges vectorielles lèvent-elles ces limites, à quel prix, et que peut-on savoir de plus avec des horloges matricielles ?
 
 | Fichier | Rôle |
 |---|---|
