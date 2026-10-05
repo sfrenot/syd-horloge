@@ -94,8 +94,7 @@
 ## Partie 4
 
 17. `min_k Mi[k][l]` est le nombre d'événements de Pl dont Pi **sait** que tous les processus les connaissent.
-18. Pi peut purger l'entrée dès que `min_k Mi[k][l] ≥ t`. Chaque processus possède alors déjà l'entrée, et Pi le sait. Cette connaissance est conservatrice : elle peut arriver bien après la connaissance effective.
-19. Une estampille compte N² entiers par message. C'est acceptable pour de petits groupes (réplication entre quelques sites) ou si l'on n'envoie que les lignes modifiées.
+18. Une estampille compte N² entiers par message. C'est acceptable pour de petits groupes (réplication entre quelques sites) ou si l'on n'envoie que les lignes modifiées.
 
 ### Exercice 4 (voir `correction/exo4-vecteur.svg` et `scenario.py exercices/exo4.txt --matrices`)
 
@@ -109,11 +108,10 @@
 
 2. Minimum par colonne : (1, 2, 0). Tout le monde connaît le 1er événement de P1 (a, envoi de m1) et les 2 premiers de P2 (d, et e, envoi de m2). Aucun événement de P3 n'est connu de tous.
 3. Non : `M3[P2][P3] = 0`. P2 a bien reçu m4 (événement f), mais **aucun message de P2 postérieur à f** n'est parvenu à P3. La matrice ne contient que ce qui a été *communiqué*, jamais la réalité globale.
-4. P3 ne peut pas purger g, car la colonne P3 a pour minimum 0. Il peut purger a (colonne P1 ≥ 1) ainsi que d et e (colonne P2 ≥ 2).
 
 ## Partie 5
 
-20. Synthèse :
+19. Synthèse :
 
 | | Physique | Lamport | Vectorielle | Matricielle |
 |---|---|---|---|---|
@@ -124,7 +122,7 @@
 | Lien avec l'heure réelle | oui | non | non | non |
 | Exemple d'utilisation | journaux, baux, TTL | exclusion mutuelle, ordre total, réplication | diffusion causale, vecteurs de versions, débogage | purge de journaux répliqués, stabilité |
 
-21. **HLC** : l'estampille reste proche de l'heure physique, donc lisible et utilisable pour « lire l'état à 14 h 03 », tout en gardant la garantie de Lamport. Cela corrige l'absence de lien avec le temps réel. **Spanner** : TrueTime renvoie un intervalle [plus tôt, plus tard]. En attendant que `plus tôt > estampille` avant de valider (*commit wait*), Spanner garantit que si T1 est validée avant que T2 ne commence, alors ts(T1) < ts(T2), même vu depuis un autre datacenter. C'est la cohérence externe.
+20. **HLC** : l'estampille reste proche de l'heure physique, donc lisible et utilisable pour « lire l'état à 14 h 03 », tout en gardant la garantie de Lamport. Cela corrige l'absence de lien avec le temps réel. **Spanner** : TrueTime renvoie un intervalle [plus tôt, plus tard]. En attendant que `plus tôt > estampille` avant de valider (*commit wait*), Spanner garantit que si T1 est validée avant que T2 ne commence, alors ts(T1) < ts(T2), même vu depuis un autre datacenter. C'est la cohérence externe.
 
 ---
 

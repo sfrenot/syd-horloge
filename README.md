@@ -223,8 +223,7 @@ python3 reseau.py matricielle -k 2 --paires   # journal court, avec la liste des
 **Questions**
 
 17. Interprétez `min_k Mi[k][l]`, affiché comme « événements connus de tous ».
-18. Chaque processus tient un **journal répliqué** : chaque message transporte les entrées du journal que l'émetteur connaît (algorithme de Wuu et Bernstein). Connaître un événement revient donc à en détenir l'entrée. Quand Pi peut-il purger l'entrée du t-ième événement de Pl sans que personne n'en ait encore besoin ?
-19. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
+18. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
 
 ### Exercice 4 : messages stables
 
@@ -233,7 +232,6 @@ python3 reseau.py matricielle -k 2 --paires   # journal court, avec la liste des
 1. Calculez la matrice de P3 après l'événement h.
 2. D'après cette matrice, quels événements P3 sait-il connus de tous les processus ?
 3. P3 sait-il que P2 a reçu m4 ? Pourtant, P2 l'a bien reçu. Expliquez cet écart.
-4. Dans le modèle du journal répliqué (question 18), P3 peut-il purger l'entrée g (envoi de m4) ? Et les entrées a et e ?
 
 Vérification : `python3 scenario.py exercices/exo4.txt --matrices`.
 
@@ -241,7 +239,7 @@ Vérification : `python3 scenario.py exercices/exo4.txt --matrices`.
 
 ## Partie 5 : synthèse
 
-20. Remplissez le tableau suivant :
+19. Remplissez le tableau suivant :
 
 | | Physique | Lamport | Vectorielle | Matricielle |
 |---|---|---|---|---|
@@ -252,7 +250,7 @@ Vérification : `python3 scenario.py exercices/exo4.txt --matrices`.
 | Lien avec l'heure réelle | | | | |
 | Exemple d'utilisation | | | | |
 
-21. **Ouverture** : les *Hybrid Logical Clocks* (CockroachDB, MongoDB) combinent une horloge physique et un compteur de Lamport. Quel problème de la partie 2 cherchent-elles à résoudre ? Google Spanner, lui, utilise TrueTime : une heure physique avec un intervalle d'incertitude borné. Pourquoi Spanner attend-il la fin de cet intervalle avant de valider une transaction ?
+20. **Ouverture** : les *Hybrid Logical Clocks* (CockroachDB, MongoDB) combinent une horloge physique et un compteur de Lamport. Quel problème de la partie 2 cherchent-elles à résoudre ? Google Spanner, lui, utilise TrueTime : une heure physique avec un intervalle d'incertitude borné. Pourquoi Spanner attend-il la fin de cet intervalle avant de valider une transaction ?
 
 ---
 
