@@ -91,12 +91,6 @@
    - b (2,0,0) ≤ l (2,4,3), donc **b → l**.
 3. En e (5,4,2), P1 connaît 4 événements de P2 (f, g, h, i) et 2 de P3 (j, k). Il ne connaît pas l.
 
-### Exercice 4 : diffusion causale
-
-1. m1 porte W = (1,0,0). P2 le délivre (V2 = (1,0,0)), puis m2 porte W = (1,1,0).
-2. Arrivée de m2 chez P3, dont V3 = (0,0,0) : W[2] = 1 = V3[2] + 1, mais W[1] = 1 > V3[1] = 0. P3 **met m2 en attente**. Arrivée de m1 : W[1] = 1 = 0 + 1 et les autres composantes sont ≤, donc P3 le délivre (V3 = (1,0,0)). P3 réexamine alors sa file d'attente : m2 est délivrable et V3 = (1,1,0).
-3. m1 porte l'estampille de Lamport 1 et m2 porte 3. Quand m2 arrive, P3 ne peut pas savoir s'il existe un message d'estampille inférieure encore en route, ni de qui il viendrait. Il faudrait attendre d'avoir reçu un message plus récent de *chaque* processus sur des canaux FIFO. C'est la diffusion totalement ordonnée : bloquante et coûteuse.
-
 ### Limites
 
 17. Une estampille compte N entiers. Pour 10 000 nœuds sur 32 bits, cela fait environ 40 Ko **par message**. Charron-Bost (1991) a montré qu'une estampille qui caractérise exactement la causalité nécessite N composantes dans le cas général.
@@ -109,7 +103,7 @@
 21. Pi peut purger l'entrée dès que `min_k Mi[k][l] ≥ t`. Chaque processus possède alors déjà l'entrée, et Pi le sait. Cette connaissance est conservatrice : elle peut arriver bien après la connaissance effective.
 22. Une estampille compte N² entiers par message. C'est acceptable pour de petits groupes (réplication entre quelques sites) ou si l'on n'envoie que les lignes modifiées.
 
-### Exercice 5 (voir `correction/exo5-vecteur.svg` et `scenario.py exercices/exo5.txt --matrices`)
+### Exercice 4 (voir `correction/exo4-vecteur.svg` et `scenario.py exercices/exo4.txt --matrices`)
 
 1. Matrice de P3 après h (ligne k = ce que P3 sait du vecteur de Pk) :
 
@@ -178,5 +172,5 @@
 
 - **E10.** Si B envoie m2 **après** avoir reçu m1 : m1 = 1, B passe à 2, m2 = 3, donc **C = 4**. Si B envoie m2 **avant** : m2 = 1, donc **C = 2**. La relation voulue par les utilisateurs, passée par le téléphone, n'est garantie que dans le premier cas.
 - **E11.** L'inégalité stricte sur toutes les composantes est fausse. Contre-exemple : P1 envoie à P2, qui reçoit ; on a bien `(1,0) → (1,1)`, mais la première composante n'est pas strictement plus grande. Il faut « ≤ partout et ≠ ».
-- **E12.** Diffusion causale avec vecteurs de diffusions et règle de délivrance (exercice 4). Coût : N entiers par message et une file d'attente par récepteur. Avec une horloge de Lamport, il faudrait attendre des nouvelles de tous les processus.
+- **E12.** Diffusion causale. Chaque message porte un vecteur de diffusions `W` (`W[j]` = nombre de messages de Pj délivrés par l'émetteur, le sien compris). Pi délivre un message de Pj si `W[j] = Vi[j] + 1` (message suivant de Pj) et `W[k] ≤ Vi[k]` pour tout k ≠ j (Pi a déjà vu tout ce que l'émetteur avait vu) ; sinon il le met en attente, et réexamine la file à chaque délivrance. Coût : N entiers par message et une file d'attente par récepteur. Avec une horloge de Lamport, il faudrait attendre des nouvelles de tous les processus.
 - **E13.** Les versions sont concurrentes : conflit à réconcilier (question 19). Une estampille de Lamport imposerait un ordre arbitraire et la dernière écriture écraserait l'autre (*last-writer-wins*) : une mise à jour serait **silencieusement perdue**.

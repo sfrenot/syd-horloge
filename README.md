@@ -199,19 +199,6 @@ python3 reseau.py vectorielle -k 2 --paires   # journal court, avec la liste des
 2. Déterminez, **à partir des vecteurs uniquement**, la relation entre c et i, entre d et l, et entre b et l.
 3. Au moment de e, combien d'événements de P2 et de P3 le processus P1 connaît-il ? Quels sont ces événements ?
 
-### Exercice 4 : diffusion causale
-
-Dans un chat de groupe, P1 diffuse la question m1 à P2 et P3. P2 reçoit m1 et diffuse la réponse m2. Le réseau est lent entre P1 et P3, si bien que **P3 reçoit m2 avant m1**.
-
-On utilise des vecteurs qui ne comptent que les **diffusions** : `V[j]` est le nombre de messages de Pj délivrés. Pi délivre un message m de Pj, estampillé `W`, si et seulement si :
-
-- `W[j] = Vi[j] + 1` (c'est le message suivant de Pj) ;
-- `W[k] ≤ Vi[k]` pour tout k ≠ j (Pi a déjà vu tout ce que Pj avait vu).
-
-1. Donnez l'estampille de m1 et celle de m2.
-2. Déroulez la réception chez P3 : que fait P3 à l'arrivée de m2 ? À l'arrivée de m1 ?
-3. Pourquoi une horloge de Lamport ne permettrait-elle pas de prendre cette décision ?
-
 ### Les limites des horloges vectorielles
 
 17. Quelle est la taille d'une estampille ? Pour un système de 10 000 nœuds, qu'est-ce que cela implique pour chaque message ? (Charron-Bost a montré en 1991 qu'on ne peut pas faire plus petit dans le cas général.)
@@ -245,16 +232,16 @@ python3 reseau.py matricielle -k 2 --paires   # journal court, avec la liste des
 21. Chaque processus tient un **journal répliqué** : chaque message transporte les entrées du journal que l'émetteur connaît (algorithme de Wuu et Bernstein). Connaître un événement revient donc à en détenir l'entrée. Quand Pi peut-il purger l'entrée du t-ième événement de Pl sans que personne n'en ait encore besoin ?
 22. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
 
-### Exercice 5 : messages stables
+### Exercice 4 : messages stables
 
-![Diagramme de l'exercice 5](exercices/exo5.svg)
+![Diagramme de l'exercice 4](exercices/exo4.svg)
 
 1. Calculez la matrice de P3 après l'événement h.
 2. D'après cette matrice, quels événements P3 sait-il connus de tous les processus ?
 3. P3 sait-il que P2 a reçu m4 ? Pourtant, P2 l'a bien reçu. Expliquez cet écart.
 4. Dans le modèle du journal répliqué (question 21), P3 peut-il purger l'entrée g (envoi de m4) ? Et les entrées a et e ?
 
-Vérification : `python3 scenario.py exercices/exo5.txt --matrices`.
+Vérification : `python3 scenario.py exercices/exo4.txt --matrices`.
 
 ---
 
