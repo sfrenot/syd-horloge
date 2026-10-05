@@ -68,7 +68,7 @@
 
 11. Une estampille plus petite ne désigne pas une cause possible. Le débogueur ne peut rien écarter : il doit examiner tous les événements d'estampille inférieure, dont la plupart sont concurrents et sans rapport avec l'erreur.
 12. Non. L'écart 5 → 12 mêle des événements de tous les processus, sans dire lesquels. L'horloge ne détecte ni un message perdu ni un message en retard.
-13. Non. Seuls les messages **internes au système** créent de la causalité observable. Le lien passe ici par un canal externe (le téléphone), invisible pour les horloges. C'est le scénario de la question E10.
+13. Non. Seuls les messages **internes au système** créent de la causalité observable. Le lien passe ici par un canal externe (le téléphone), invisible pour les horloges.
 14. Dans l'exclusion mutuelle de Lamport (ou dans tout ordonnancement par estampille), P1 gagne toutes les égalités. Il n'y a pas de famine, car les estampilles croissent, mais il y a un biais systématique. On peut le corriger par un tirage ou une rotation de la priorité.
 
 ## Partie 3
@@ -108,61 +108,3 @@
 
 2. Minimum par colonne : (1, 2, 0). Tout le monde connaît le 1er événement de P1 (a, envoi de m1) et les 2 premiers de P2 (d, et e, envoi de m2). Aucun événement de P3 n'est connu de tous.
 3. Non : `M3[P2][P3] = 0`. P2 a bien reçu m4 (événement f), mais **aucun message de P2 postérieur à f** n'est parvenu à P3. La matrice ne contient que ce qui a été *communiqué*, jamais la réalité globale.
-
-## Partie 5
-
-19. Synthèse :
-
-| | Physique | Lamport | Vectorielle | Matricielle |
-|---|---|---|---|---|
-| Taille d'une estampille | 1 | 1 | N | N² |
-| `a → b ⇒ C(a) < C(b)` | non (sauf erreur < délai min) | oui | oui | oui |
-| `C(a) < C(b) ⇒ a → b` | non | non | oui | oui (sur la ligne propre) |
-| Détecte la concurrence | non | non (seulement si égalité) | oui | oui |
-| Lien avec l'heure réelle | oui | non | non | non |
-| Exemple d'utilisation | journaux, baux, TTL | exclusion mutuelle, ordre total, réplication | diffusion causale, vecteurs de versions, débogage | purge de journaux répliqués, stabilité |
-
-20. **HLC** : l'estampille reste proche de l'heure physique, donc lisible et utilisable pour « lire l'état à 14 h 03 », tout en gardant la garantie de Lamport. Cela corrige l'absence de lien avec le temps réel. **Spanner** : TrueTime renvoie un intervalle [plus tôt, plus tard]. En attendant que `plus tôt > estampille` avant de valider (*commit wait*), Spanner garantit que si T1 est validée avant que T2 ne commence, alors ts(T1) < ts(T2), même vu depuis un autre datacenter. C'est la cohérence externe.
-
----
-
-## Questions type d'examen
-
-- **E1.** Une horloge physique mesure le temps réel et dérive. Une horloge logique ne mesure que l'ordre causal. NTP laisse une incertitude de l'ordre de la milliseconde : les événements plus proches que cette incertitude ne peuvent pas être ordonnés (voir la question 2).
-- **E2.** `a → b ⇒ C(a) < C(b)`. Lamport la respecte, mais pas la réciproque (exercice 1.2).
-- **E3.**
-  - **Problèmes :** Lamport ne donne pas la réciproque, ne détecte pas la concurrence et ne permet pas de repérer un message manquant.
-  - **Solution :** les vecteurs caractérisent exactement la causalité.
-  - **Prix :** N entiers par message, et un groupe de taille connue.
-- **E4.** Voir la question 17. Application : purge d'un journal répliqué, détection des messages stables.
-- **E5.** Réponses :
-  - (a) **V**.
-  - (b) **F**, contre-exemple c ‖ i dans l'exercice 1.
-  - (c) **V**, par contraposée de (a).
-  - (d) **V**.
-  - (e) **F**, l'ordre entre concurrents est arbitraire.
-  - (f) **F**.
-- **E6.** On sait seulement que **B ne précède pas A**. Soit A → B, soit A ‖ B. Parmi les choix proposés dans le DS, la bonne réponse est « si A et B ont un lien de causalité, alors A est survenu avant B ».
-- **E7.** Analyse de chaque ensemble :
-  1. `(3,1,5,7) → (3,2,6,7)` ; `(2,1,6,8)` est concurrent des deux (1re composante plus petite, mais 3e ou 4e plus grande).
-  2. Les trois sont **deux à deux concurrents**.
-  3. Chaîne causale `(1,2,3,4) → (2,3,4,5) → (3,4,5,6)` : aucune concurrence.
-  4. Chaîne `(1,3,2,2) → (1,4,5,7) → (1,5,6,7)` : aucune concurrence. Le piège est que les vecteurs sont donnés dans l'ordre décroissant.
-- **E8.** Convention : les horloges avancent physiquement, le message porte l'heure de l'émetteur, et à la réception on applique `C ← max(C, t + 1)`.
-  - A envoie m1 estampillé **10**.
-  - B le reçoit à l'instant réel 4 : son horloge indique 4 < 11, donc elle passe à **11**.
-  - Une unité plus tard, B indique 12 et envoie m2 estampillé **12**.
-  - C le reçoit à l'instant réel 7 : son horloge indique 5 + 7 = 12, donc elle passe à **13**.
-
-  Avec la convention « incrément avant chaque événement » (DS 2021), les valeurs changent légèrement : c'est acceptable si l'étudiant **énonce sa convention** et l'applique de façon cohérente.
-- **E9.** Méthode de l'exercice 1. Pour générer un sujet et sa correction :
-
-  ```bash
-  python3 scenario.py sujet.txt --svg sujet.svg
-  python3 scenario.py sujet.txt --svg corrige.svg --avec vecteur
-  ```
-
-- **E10.** Si B envoie m2 **après** avoir reçu m1 : m1 = 1, B passe à 2, m2 = 3, donc **C = 4**. Si B envoie m2 **avant** : m2 = 1, donc **C = 2**. La relation voulue par les utilisateurs, passée par le téléphone, n'est garantie que dans le premier cas.
-- **E11.** L'inégalité stricte sur toutes les composantes est fausse. Contre-exemple : P1 envoie à P2, qui reçoit ; on a bien `(1,0) → (1,1)`, mais la première composante n'est pas strictement plus grande. Il faut « ≤ partout et ≠ ».
-- **E12.** Diffusion causale. Chaque message porte un vecteur de diffusions `W` (`W[j]` = nombre de messages de Pj délivrés par l'émetteur, le sien compris). Pi délivre un message de Pj si `W[j] = Vi[j] + 1` (message suivant de Pj) et `W[k] ≤ Vi[k]` pour tout k ≠ j (Pi a déjà vu tout ce que l'émetteur avait vu) ; sinon il le met en attente, et réexamine la file à chaque délivrance. Coût : N entiers par message et une file d'attente par récepteur. Avec une horloge de Lamport, il faudrait attendre des nouvelles de tous les processus.
-- **E13.** Les versions sont concurrentes : conflit à réconcilier : le système garde les deux versions (*siblings*) et l'application les fusionne, par exemple en faisant l'union des paniers dans Dynamo. Une estampille de Lamport imposerait un ordre arbitraire et la dernière écriture écraserait l'autre (*last-writer-wins*) : une mise à jour serait **silencieusement perdue**.
