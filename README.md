@@ -199,12 +199,6 @@ python3 reseau.py vectorielle -k 2 --paires   # journal court, avec la liste des
 2. Déterminez, **à partir des vecteurs uniquement**, la relation entre c et i, entre d et l, et entre b et l.
 3. Au moment de e, combien d'événements de P2 et de P3 le processus P1 connaît-il ? Quels sont ces événements ?
 
-### Les limites des horloges vectorielles
-
-17. Quelle est la taille d'une estampille ? Pour un système de 10 000 nœuds, qu'est-ce que cela implique pour chaque message ? (Charron-Bost a montré en 1991 qu'on ne peut pas faire plus petit dans le cas général.)
-18. Que devient le mécanisme si des processus rejoignent ou quittent le système en cours de route ?
-19. **Utilisation** : Dynamo et Riak attachent un *vecteur de versions* à chaque objet répliqué. Deux répliques d'un panier portent les versions `[S1:2, S2:1]` et `[S1:1, S2:2]`. Que doit faire le système ? Et avec `[S1:2, S2:1]` et `[S1:3, S2:1]` ?
-
 ---
 
 ## Partie 4 : les horloges matricielles
@@ -228,9 +222,9 @@ python3 reseau.py matricielle -k 2 --paires   # journal court, avec la liste des
 
 **Questions**
 
-20. Interprétez `min_k Mi[k][l]`, affiché comme « événements connus de tous ».
-21. Chaque processus tient un **journal répliqué** : chaque message transporte les entrées du journal que l'émetteur connaît (algorithme de Wuu et Bernstein). Connaître un événement revient donc à en détenir l'entrée. Quand Pi peut-il purger l'entrée du t-ième événement de Pl sans que personne n'en ait encore besoin ?
-22. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
+17. Interprétez `min_k Mi[k][l]`, affiché comme « événements connus de tous ».
+18. Chaque processus tient un **journal répliqué** : chaque message transporte les entrées du journal que l'émetteur connaît (algorithme de Wuu et Bernstein). Connaître un événement revient donc à en détenir l'entrée. Quand Pi peut-il purger l'entrée du t-ième événement de Pl sans que personne n'en ait encore besoin ?
+19. Quel est le coût d'une estampille matricielle ? Dans quels cas ce coût est-il acceptable ?
 
 ### Exercice 4 : messages stables
 
@@ -239,7 +233,7 @@ python3 reseau.py matricielle -k 2 --paires   # journal court, avec la liste des
 1. Calculez la matrice de P3 après l'événement h.
 2. D'après cette matrice, quels événements P3 sait-il connus de tous les processus ?
 3. P3 sait-il que P2 a reçu m4 ? Pourtant, P2 l'a bien reçu. Expliquez cet écart.
-4. Dans le modèle du journal répliqué (question 21), P3 peut-il purger l'entrée g (envoi de m4) ? Et les entrées a et e ?
+4. Dans le modèle du journal répliqué (question 18), P3 peut-il purger l'entrée g (envoi de m4) ? Et les entrées a et e ?
 
 Vérification : `python3 scenario.py exercices/exo4.txt --matrices`.
 
@@ -247,7 +241,7 @@ Vérification : `python3 scenario.py exercices/exo4.txt --matrices`.
 
 ## Partie 5 : synthèse
 
-23. Remplissez le tableau suivant :
+20. Remplissez le tableau suivant :
 
 | | Physique | Lamport | Vectorielle | Matricielle |
 |---|---|---|---|---|
@@ -258,7 +252,7 @@ Vérification : `python3 scenario.py exercices/exo4.txt --matrices`.
 | Lien avec l'heure réelle | | | | |
 | Exemple d'utilisation | | | | |
 
-24. **Ouverture** : les *Hybrid Logical Clocks* (CockroachDB, MongoDB) combinent une horloge physique et un compteur de Lamport. Quel problème de la partie 2 cherchent-elles à résoudre ? Google Spanner, lui, utilise TrueTime : une heure physique avec un intervalle d'incertitude borné. Pourquoi Spanner attend-il la fin de cet intervalle avant de valider une transaction ?
+21. **Ouverture** : les *Hybrid Logical Clocks* (CockroachDB, MongoDB) combinent une horloge physique et un compteur de Lamport. Quel problème de la partie 2 cherchent-elles à résoudre ? Google Spanner, lui, utilise TrueTime : une heure physique avec un intervalle d'incertitude borné. Pourquoi Spanner attend-il la fin de cet intervalle avant de valider une transaction ?
 
 ---
 

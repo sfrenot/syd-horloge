@@ -91,17 +91,11 @@
    - b (2,0,0) ≤ l (2,4,3), donc **b → l**.
 3. En e (5,4,2), P1 connaît 4 événements de P2 (f, g, h, i) et 2 de P3 (j, k). Il ne connaît pas l.
 
-### Limites
-
-17. Une estampille compte N entiers. Pour 10 000 nœuds sur 32 bits, cela fait environ 40 Ko **par message**. Charron-Bost (1991) a montré qu'une estampille qui caractérise exactement la causalité nécessite N composantes dans le cas général.
-18. Il faut attribuer un indice à chaque nouvel arrivant et purger ceux qui partent. En pratique, on utilise des tables {identifiant: compteur} (vecteurs de versions), des *dotted version vectors* ou des *interval tree clocks* (Almeida et al., 2008).
-19. `[S1:2, S2:1]` et `[S1:1, S2:2]` sont **concurrents** : c'est un conflit. Le système garde les deux versions (*siblings*), et l'application réconcilie, par exemple en faisant l'union des paniers dans Dynamo. En revanche, `[S1:3, S2:1]` domine `[S1:2, S2:1]` : la nouvelle version remplace l'ancienne.
-
 ## Partie 4
 
-20. `min_k Mi[k][l]` est le nombre d'événements de Pl dont Pi **sait** que tous les processus les connaissent.
-21. Pi peut purger l'entrée dès que `min_k Mi[k][l] ≥ t`. Chaque processus possède alors déjà l'entrée, et Pi le sait. Cette connaissance est conservatrice : elle peut arriver bien après la connaissance effective.
-22. Une estampille compte N² entiers par message. C'est acceptable pour de petits groupes (réplication entre quelques sites) ou si l'on n'envoie que les lignes modifiées.
+17. `min_k Mi[k][l]` est le nombre d'événements de Pl dont Pi **sait** que tous les processus les connaissent.
+18. Pi peut purger l'entrée dès que `min_k Mi[k][l] ≥ t`. Chaque processus possède alors déjà l'entrée, et Pi le sait. Cette connaissance est conservatrice : elle peut arriver bien après la connaissance effective.
+19. Une estampille compte N² entiers par message. C'est acceptable pour de petits groupes (réplication entre quelques sites) ou si l'on n'envoie que les lignes modifiées.
 
 ### Exercice 4 (voir `correction/exo4-vecteur.svg` et `scenario.py exercices/exo4.txt --matrices`)
 
@@ -119,7 +113,7 @@
 
 ## Partie 5
 
-23. Synthèse :
+20. Synthèse :
 
 | | Physique | Lamport | Vectorielle | Matricielle |
 |---|---|---|---|---|
@@ -130,7 +124,7 @@
 | Lien avec l'heure réelle | oui | non | non | non |
 | Exemple d'utilisation | journaux, baux, TTL | exclusion mutuelle, ordre total, réplication | diffusion causale, vecteurs de versions, débogage | purge de journaux répliqués, stabilité |
 
-24. **HLC** : l'estampille reste proche de l'heure physique, donc lisible et utilisable pour « lire l'état à 14 h 03 », tout en gardant la garantie de Lamport. Cela corrige l'absence de lien avec le temps réel. **Spanner** : TrueTime renvoie un intervalle [plus tôt, plus tard]. En attendant que `plus tôt > estampille` avant de valider (*commit wait*), Spanner garantit que si T1 est validée avant que T2 ne commence, alors ts(T1) < ts(T2), même vu depuis un autre datacenter. C'est la cohérence externe.
+21. **HLC** : l'estampille reste proche de l'heure physique, donc lisible et utilisable pour « lire l'état à 14 h 03 », tout en gardant la garantie de Lamport. Cela corrige l'absence de lien avec le temps réel. **Spanner** : TrueTime renvoie un intervalle [plus tôt, plus tard]. En attendant que `plus tôt > estampille` avant de valider (*commit wait*), Spanner garantit que si T1 est validée avant que T2 ne commence, alors ts(T1) < ts(T2), même vu depuis un autre datacenter. C'est la cohérence externe.
 
 ---
 
@@ -142,7 +136,7 @@
   - **Problèmes :** Lamport ne donne pas la réciproque, ne détecte pas la concurrence et ne permet pas de repérer un message manquant.
   - **Solution :** les vecteurs caractérisent exactement la causalité.
   - **Prix :** N entiers par message, et un groupe de taille connue.
-- **E4.** Voir la question 20. Application : purge d'un journal répliqué, détection des messages stables.
+- **E4.** Voir la question 17. Application : purge d'un journal répliqué, détection des messages stables.
 - **E5.** Réponses :
   - (a) **V**.
   - (b) **F**, contre-exemple c ‖ i dans l'exercice 1.
@@ -173,4 +167,4 @@
 - **E10.** Si B envoie m2 **après** avoir reçu m1 : m1 = 1, B passe à 2, m2 = 3, donc **C = 4**. Si B envoie m2 **avant** : m2 = 1, donc **C = 2**. La relation voulue par les utilisateurs, passée par le téléphone, n'est garantie que dans le premier cas.
 - **E11.** L'inégalité stricte sur toutes les composantes est fausse. Contre-exemple : P1 envoie à P2, qui reçoit ; on a bien `(1,0) → (1,1)`, mais la première composante n'est pas strictement plus grande. Il faut « ≤ partout et ≠ ».
 - **E12.** Diffusion causale. Chaque message porte un vecteur de diffusions `W` (`W[j]` = nombre de messages de Pj délivrés par l'émetteur, le sien compris). Pi délivre un message de Pj si `W[j] = Vi[j] + 1` (message suivant de Pj) et `W[k] ≤ Vi[k]` pour tout k ≠ j (Pi a déjà vu tout ce que l'émetteur avait vu) ; sinon il le met en attente, et réexamine la file à chaque délivrance. Coût : N entiers par message et une file d'attente par récepteur. Avec une horloge de Lamport, il faudrait attendre des nouvelles de tous les processus.
-- **E13.** Les versions sont concurrentes : conflit à réconcilier (question 19). Une estampille de Lamport imposerait un ordre arbitraire et la dernière écriture écraserait l'autre (*last-writer-wins*) : une mise à jour serait **silencieusement perdue**.
+- **E13.** Les versions sont concurrentes : conflit à réconcilier : le système garde les deux versions (*siblings*) et l'application les fusionne, par exemple en faisant l'union des paniers dans Dynamo. Une estampille de Lamport imposerait un ordre arbitraire et la dernière écriture écraserait l'autre (*last-writer-wins*) : une mise à jour serait **silencieusement perdue**.
